@@ -28,7 +28,7 @@ function buildMensaje(porChart: ChartGroup[], fechaHoy: string | null): string {
     lineas.push(`${chart.name}:`);
     for (const item of items) {
       const sufijo = item.change ? ` ${item.change}` : "";
-      lineas.push(`*#${item.pos} ${item.title}${sufijo}*`);
+      lineas.push(`* #${item.pos} ${item.title}${sufijo}`);
     }
   }
 
