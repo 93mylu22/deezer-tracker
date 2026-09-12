@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { buildDiffs, type DiffResult, type Historico } from "@/lib/diff";
-import MessagePanel, { type ChartGroup } from "./MessagePanel";
+import ChartPanel from "./ChartPanel";
 
 interface Chart {
   id: string;
@@ -28,69 +28,40 @@ export default function Home() {
   const fechaHoy = fechas.length > 0 ? fechas[fechas.length - 1] : null;
   const diffs: DiffResult[] = fechaHoy ? buildDiffs(fechaHoy, historico) : [];
 
-  const porChart: ChartGroup[] = charts.map((chart) => ({
-    chart,
-    items: diffs.filter((d) => d.chartId === chart.id),
-  }));
-
   return (
-    <main className="min-h-screen px-4 py-8 text-[#F3EFFF] sm:px-6 sm:py-12">
-      <div className="mx-auto max-w-md sm:max-w-lg">
-        <header className="mb-8">
-          <p className="text-xs uppercase tracking-wide text-muted">
-            ARMY 🇨🇴 - music tracker
-          </p>
-          <h1 className="mt-1 text-2xl font-semibold text-accentLight sm:text-3xl">
-            Seguimiento diario de charts colombianos
-          </h1>
-          <p className="mt-2 text-sm text-[#B4ADD1]">
-            {fechaHoy
-              ? `Última actualización: ${fechaHoy}`
-              : "Aún no hay datos. Corre 'npm run cron' o espera al primer cron automático."}
-          </p>
+    <main className="min-h-screen bg-bg px-4 py-6 text-[#F3EFFF] sm:px-6 sm:py-10">
+      <div className="mx-auto w-full max-w-md sm:max-w-lg">
+        <header className="mb-6 flex items-start justify-between gap-3 sm:mb-8">
+          <div>
+            <p className="text-xs font-medium tracking-wide text-muted">
+              deezer-tracker
+            </p>
+            <h1 className="mt-1 text-xl font-semibold leading-tight text-accentLight sm:text-3xl">
+              Seguimiento diario de charts
+            </h1>
+          </div>
+          <span className="mt-1 shrink-0 rounded-full border border-border bg-surface px-3 py-1 text-[11px] text-muted">
+            {fechaHoy ?? "sin datos"}
+          </span>
         </header>
 
-        {porChart.map(({ chart, items }) => (
-          <section
-            key={chart.id}
-            className="mb-6 rounded-2xl border border-border bg-surface p-4 sm:p-5"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <h2 className="font-medium text-white">{chart.name}</h2>
-              <a
-                href={chart.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="shrink-0 text-xs text-[#9B7BFF] underline underline-offset-2"
-              >
-                Ver en Deezer
-              </a>
-            </div>
-            <ul className="mt-3 space-y-2">
-              {items.length === 0 && (
-                <li className="text-sm text-muted">
-                  Ninguna canción rastreada está en este chart hoy.
-                </li>
-              )}
-              {items.map((item) => (
-                <li
-                  key={`${item.artist}-${item.title}`}
-                  className="flex items-center justify-between text-sm"
-                >
-                  <span>
-                    {item.title}{" "}
-                    <span className="text-muted">— {item.artist}</span>
-                  </span>
-                  <span className="font-mono text-accentLight">
-                    #{item.pos} {item.change}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
+        {!fechaHoy && (
+          <p className="mb-6 rounded-2xl border border-border bg-surface p-4 text-sm text-[#B4ADD1]">
+            Aún no hay datos. Corre <code>npm run cron</code> localmente o
+            espera al primer cron automático (9am hora Bogotá).
+          </p>
+        )}
 
-        <MessagePanel porChart={porChart} fechaHoy={fechaHoy} />
+        <div className="space-y-4 sm:space-y-5">
+          {charts.map((chart) => (
+            <ChartPanel
+              key={chart.id}
+              chart={chart}
+              items={diffs.filter((d) => d.chartId === chart.id)}
+              fechaHoy={fechaHoy}
+            />
+          ))}
+        </div>
       </div>
     </main>
   );
