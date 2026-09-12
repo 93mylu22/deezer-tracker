@@ -38,10 +38,10 @@ export default function Home() {
       <div className="mx-auto max-w-md sm:max-w-lg">
         <header className="mb-8">
           <p className="text-xs uppercase tracking-wide text-muted">
-            deezer-tracker
+            ARMY 🇨🇴 - music tracker
           </p>
           <h1 className="mt-1 text-2xl font-semibold text-accentLight sm:text-3xl">
-            Seguimiento diario de charts
+            Seguimiento diario de charts colombianos
           </h1>
           <p className="mt-2 text-sm text-[#B4ADD1]">
             {fechaHoy
