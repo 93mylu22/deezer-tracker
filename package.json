@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "cron": "tsx scripts/cron.ts"
+    "cron": "tsx scripts/cron.ts",
+    "update-history": "tsx scripts/cron.ts"
   },
   "dependencies": {
     "next": "15.0.3",
