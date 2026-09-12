@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: '20'
       - name: Instalar dependencias
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Actualizar historico
         run: npm run update-history
       - name: Commit cambios
