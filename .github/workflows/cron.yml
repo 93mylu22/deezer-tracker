@@ -22,7 +22,7 @@ jobs:
           node-version: 20
 
       - name: Instalar dependencias
-        run: npm ci
+        - run: npm install
 
       - name: Ejecutar cron de Deezer
         run: npm run cron
