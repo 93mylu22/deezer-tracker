@@ -4,5 +4,11 @@
     "name": "Top 100 Colombia",
     "playlistId": "1116188451",
     "url": "https://www.deezer.com/es/playlist/1116188451"
-  }
+  },
+  {
+    "id": "deezer_ww_top100",
+    "name": "Top 100 Global",
+    "playlistId": "3155776842",
+    "url": "https://www.deezer.com/es/playlist/3155776842"
+  },
 ]
