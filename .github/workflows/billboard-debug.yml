@@ -1,0 +1,41 @@
+name: Diagnóstico Billboard
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL del chart de Billboard a inspeccionar"
+        required: false
+        default: "https://billboard.com.co/billboard-hot-100/"
+      espera_ms:
+        description: "Milisegundos de espera extra tras cargar la página"
+        required: false
+        default: "8000"
+
+jobs:
+  diagnostico:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependencias
+        run: npm install --legacy-peer-deps
+
+      - name: Instalar navegador Chromium para Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Ejecutar diagnóstico
+        run: npm run debug:billboard -- "${{ github.event.inputs.url }}" "${{ github.event.inputs.espera_ms }}"
+
+      - name: Subir HTML renderizado como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: billboard-render
+          path: debug-output/billboard-render.html
+          retention-days: 7
