@@ -99,7 +99,7 @@ export default function ChartPanel({
         <h2 className="text-sm font-medium text-white sm:text-base">
           {chart.name}
         </h2>
-        <a
+        
           href={chart.url}
           target="_blank"
           rel="noopener noreferrer"
@@ -143,31 +143,30 @@ export default function ChartPanel({
       </ul>
 
       <div className="mt-4 border-t border-border pt-4">
-        <p className="mb-2 text-xs font-medium text-muted">
-          Mensaje para WhatsApp
-        </p>
-        <pre
-          ref={preRef}
-          onClick={seleccionarTextoManual}
-          className="cursor-text select-all whitespace-pre-wrap rounded-xl bg-[#0F0C1B] p-3 text-sm leading-relaxed text-[#E4DCFF]"
-        >
-          {mensaje}
-        </pre>
         <button
           type="button"
           onClick={manejarCopiar}
           disabled={!hayCanciones}
-          className={`mt-3 w-full rounded-xl py-3 text-sm font-medium text-white transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 ${
+          className={`w-full rounded-xl py-3 text-sm font-medium text-white transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 ${
             estado === "error" ? "bg-down" : "bg-accent"
           }`}
         >
           {hayCanciones ? etiquetaBoton : "Sin canciones para copiar"}
         </button>
         {estado === "error" && (
-          <p className="mt-2 text-xs text-muted">
-            Tu navegador bloqueó el copiado automático. Toca el mensaje de
-            arriba para seleccionar el texto y cópialo manualmente.
-          </p>
+          <div className="mt-3">
+            <p className="mb-2 text-xs text-muted">
+              Tu navegador bloqueó el copiado automático. Toca el mensaje de
+              abajo para seleccionar el texto y cópialo manualmente.
+            </p>
+            <pre
+              ref={preRef}
+              onClick={seleccionarTextoManual}
+              className="cursor-text select-all whitespace-pre-wrap rounded-xl bg-[#0F0C1B] p-3 text-sm leading-relaxed text-[#E4DCFF]"
+            >
+              {mensaje}
+            </pre>
+          </div>
         )}
       </div>
     </section>
