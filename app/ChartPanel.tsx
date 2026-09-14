@@ -99,7 +99,7 @@ export default function ChartPanel({
         <h2 className="text-sm font-medium text-white sm:text-base">
           {chart.name}
         </h2>
-        
+        <a
           href={chart.url}
           target="_blank"
           rel="noopener noreferrer"
