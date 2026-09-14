@@ -1,43 +1,3 @@
-export interface HistoricoEntry {
-  artist: string;
-  title: string;
-  chartId: string;
-  pos: number | null;
-}
-
-export type Historico = Record<string, HistoricoEntry[]>;
-
-export interface DiffResult {
-  artist: string;
-  title: string;
-  chartId: string;
-  pos: number;
-  change: string;
-}
-
-/**
- * Calcula el texto de cambio de posición entre hoy y ayer.
- * - Ayer sin registro (o sin posición) y hoy con posición => "(RE)" sin emoji.
- * - Subió de posición (número más bajo es mejor) => "(+N)⬆️"
- * - Bajó de posición => "(-N)⬇️"
- * - Se mantuvo igual => "(=)"
- */
-export function diffPos(hoy: number, ayer: number | null | undefined): string {
-  if (ayer === null || ayer === undefined) {
-    return "(RE)";
-  }
-  const delta = ayer - hoy;
-  if (delta > 0) return `(+${delta})⬆️`;
-  if (delta < 0) return `(-${delta})⬇️`;
-  if (delta === 0) return `(=)`;
-  return "(NEW) 🆕";
-}
-
-/**
- * Construye la lista de diffs para una fecha dada, comparando contra
- * el día anterior disponible en el histórico. Solo incluye canciones
- * que SÍ tienen posición hoy (las que no aparecen en el chart se omiten).
- */
 export function buildDiffs(
   fechaHoy: string,
   historico: Historico
@@ -74,5 +34,5 @@ export function buildDiffs(
     });
   }
 
-  return resultados;
+  return resultados.sort((a, b) => a.pos - b.pos);
 }
