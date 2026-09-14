@@ -21,7 +21,7 @@ async function main(): Promise<void> {
 
   try {
     const page = await browser.newPage();
-    await page.goto(URL, { waitUntil: "networkidle", timeout: 60000 });
+    await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
 
     console.log(`Esperando ${ESPERA_MS}ms adicionales para que cargue el chart...`);
     await page.waitForTimeout(ESPERA_MS);
