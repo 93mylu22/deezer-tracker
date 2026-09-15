@@ -33,10 +33,10 @@ export default function Home() {
         <header className="mb-6 flex items-start justify-between gap-3 sm:mb-8">
           <div>
             <p className="text-xs font-medium tracking-wide text-muted">
-              deezer-tracker
+              ARMY 🇨🇴 music-tracker
             </p>
             <h1 className="mt-1 text-xl font-semibold leading-tight text-accentLight sm:text-3xl">
-              Seguimiento diario de charts
+              Seguimiento diario de charts en Colombia
             </h1>
           </div>
           <span className="mt-1 shrink-0 rounded-full border border-border bg-surface px-3 py-1 text-[11px] text-muted">
