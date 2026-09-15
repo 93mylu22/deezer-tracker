@@ -25,7 +25,7 @@ export function buildMensajeChart(
     lineas.push(`${chartName}:`);
     for (const item of items) {
       const sufijo = item.change ? ` ${item.change}` : "";
-      lineas.push(`* #${item.pos} ${item.title}${sufijo}`);
+      lineas.push(`*#${item.pos} ${item.title}${sufijo}*`);
     }
   }
 

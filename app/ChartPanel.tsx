@@ -127,7 +127,9 @@ export default function ChartPanel({
               <p className="truncate text-sm font-medium text-white">
                 {item.title}
               </p>
-              <p className="truncate text-xs text-muted">{item.artist}</p>
+              {item.artist && (
+                <p className="truncate text-xs text-muted">{item.artist}</p>
+              )}
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <span className="rounded-lg bg-surfaceRaised px-2 py-1 font-mono text-sm text-accentLight">

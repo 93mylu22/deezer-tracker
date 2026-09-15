@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { getDeezerChart } from "../lib/deezer";
+import { getDeezerChart, getDeezerArtistChart } from "../lib/deezer";
 import { getBillboardChart } from "../lib/billboard";
 import type { HistoricoEntry, Historico } from "../lib/diff";
 
@@ -8,6 +8,7 @@ interface Chart {
   id: string;
   name: string;
   source?: "deezer" | "billboard";
+  contentType?: "tracks" | "artists";
   frequency?: "daily" | "weekly";
   playlistId?: string;
   url: string;
@@ -60,8 +61,8 @@ function normaliza(str: string): string {
     .trim();
 }
 
-/** Trae el top de un chart, según su "source" (deezer por defecto). */
-async function traerTop(
+/** Trae el top de CANCIONES de un chart, según su "source". */
+async function traerTopCanciones(
   chart: Chart
 ): Promise<{ pos: number; artist: string; title: string }[]> {
   if (chart.source === "billboard") {
@@ -76,6 +77,19 @@ async function traerTop(
   return getDeezerChart(chart.playlistId);
 }
 
+/** Trae el top de ARTISTAS de un chart, según su "source". */
+async function traerTopArtistas(
+  chart: Chart
+): Promise<{ pos: number; name: string }[]> {
+  if (chart.source === "deezer") {
+    return getDeezerArtistChart(100);
+  }
+
+  throw new Error(
+    `Chart de artistas con source "${chart.source}" todavía no está soportado.`
+  );
+}
+
 async function main(): Promise<void> {
   const charts = readJson<Chart[]>("charts.json");
   const tracked = readJson<Tracked[]>("tracked.json");
@@ -85,13 +99,17 @@ async function main(): Promise<void> {
   const esLunes = esLunesBogota();
   const entradasHoy: HistoricoEntry[] = [];
 
+  // Artistas únicos (sin duplicar) presentes en tracked.json, para los
+  // charts de tipo "artists" (donde no aplica buscar por título de canción).
+  const artistasUnicos = Array.from(new Set(tracked.map((t) => t.artist)));
+
   for (const chart of charts) {
     const frecuencia = chart.frequency ?? "daily";
+    const contentType = chart.contentType ?? "tracks";
     const forzarTodos = process.env.FORZAR_TODOS === "true";
 
     // Charts semanales (Billboard) solo se consultan los lunes,
-    // salvo que se fuerce manualmente (por ejemplo, para sembrar el
-    // primer dato o para pruebas vía workflow_dispatch).
+    // salvo que se fuerce manualmente.
     if (frecuencia === "weekly" && !esLunes && !forzarTodos) {
       console.log(
         `\n⏭️  "${chart.name}" es semanal y hoy no es lunes; se omite.`
@@ -100,15 +118,52 @@ async function main(): Promise<void> {
     }
 
     console.log(
-      `\n📊 Consultando "${chart.name}" (${chart.source ?? "deezer"}, ${frecuencia})...`
+      `\n📊 Consultando "${chart.name}" (${chart.source ?? "deezer"}, ${contentType}, ${frecuencia})...`
     );
 
+    if (contentType === "artists") {
+      let topArtistas: { pos: number; name: string }[];
+      try {
+        topArtistas = await traerTopArtistas(chart);
+      } catch (err) {
+        console.error(`  ⚠️ No se pudo actualizar "${chart.name}":`, err);
+        continue;
+      }
+
+      console.log(`  Se obtuvieron ${topArtistas.length} artistas.`);
+
+      for (const artista of artistasUnicos) {
+        const match = topArtistas.find((a) =>
+          normaliza(a.name).includes(normaliza(artista))
+        );
+
+        // Para charts de artistas: "title" guarda el nombre del artista
+        // (es lo que se muestra en el panel) y "artist" queda vacío,
+        // ya que aquí no hay una canción específica involucrada.
+        entradasHoy.push({
+          artist: "",
+          title: artista,
+          chartId: chart.id,
+          pos: match ? match.pos : null,
+        });
+
+        if (match) {
+          console.log(`  ✓ ${artista}: #${match.pos}`);
+        } else {
+          console.log(`  ✗ ${artista}: no está en el top`);
+        }
+      }
+
+      continue;
+    }
+
+    // Charts de tipo "tracks" (comportamiento original: busca canciones).
     let top100: { pos: number; artist: string; title: string }[];
     try {
-      top100 = await traerTop(chart);
+      top100 = await traerTopCanciones(chart);
     } catch (err) {
       console.error(`  ⚠️ No se pudo actualizar "${chart.name}":`, err);
-      continue; // no se agrega nada para este chart hoy
+      continue;
     }
 
     console.log(`  Se obtuvieron ${top100.length} canciones.`);
