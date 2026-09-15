@@ -15,26 +15,38 @@
     {
       "artist": "BTS",
       "title": "NORMAL",
-      "chartId": "deezer_co_top100",
+      "chartId": "deezer_top100_global",
       "pos": null
     },
     {
       "artist": "BTS",
       "title": "SWIM",
-      "chartId": "deezer_co_top100",
+      "chartId": "deezer_top100_global",
       "pos": null
     },
     {
       "artist": "BTS",
       "title": "NORMAL",
-      "chartId": "deezer_co_top100",
+      "chartId": "deezer_top_trending_colombia",
       "pos": null
     },
     {
       "artist": "BTS",
       "title": "SWIM",
-      "chartId": "deezer_co_top100",
+      "chartId": "deezer_top_trending_colombia",
       "pos": null
+    },
+    {
+      "artist": "BTS",
+      "title": "NORMAL",
+      "chartId": "billboard_co_hot100",
+      "pos": 77
+    },
+    {
+      "artist": "BTS",
+      "title": "SWIM",
+      "chartId": "billboard_co_hot100",
+      "pos": 21
     }
   ]
 }
