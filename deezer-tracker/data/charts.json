@@ -1,0 +1,17 @@
+[
+  {
+    "id": "deezer_co_top100",
+    "name": "Deezer Colombia Top 100",
+    "source": "deezer",
+    "frequency": "daily",
+    "playlistId": "1116188451",
+    "url": "https://www.deezer.com/es/playlist/1116188451"
+  },
+  {
+    "id": "billboard_co_hot100",
+    "name": "Billboard Colombia Hot 100",
+    "source": "billboard",
+    "frequency": "weekly",
+    "url": "https://billboard.com.co/billboard-hot-100/"
+  }
+]
