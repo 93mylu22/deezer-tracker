@@ -7,7 +7,7 @@ import { buildMensajeChart } from "@/lib/message";
 interface Chart {
   id: string;
   name: string;
-  playlistId: string;
+  playlistId?: string;
   url: string;
 }
 
