@@ -87,10 +87,12 @@ async function main(): Promise<void> {
 
   for (const chart of charts) {
     const frecuencia = chart.frequency ?? "daily";
+    const forzarTodos = process.env.FORZAR_TODOS === "true";
 
-    // Charts semanales (Billboard) solo se consultan los lunes.
-    // Ningún otro día se agrega (ni siquiera repetido) para este chart.
-    if (frecuencia === "weekly" && !esLunes) {
+    // Charts semanales (Billboard) solo se consultan los lunes,
+    // salvo que se fuerce manualmente (por ejemplo, para sembrar el
+    // primer dato o para pruebas vía workflow_dispatch).
+    if (frecuencia === "weekly" && !esLunes && !forzarTodos) {
       console.log(
         `\n⏭️  "${chart.name}" es semanal y hoy no es lunes; se omite.`
       );
