@@ -1,7 +1,7 @@
 [
   {
     "id": "deezer_co_top100",
-    "name": "Deezer Colombia Top 100",
+    "name": "Top 100 Colombia",
     "source": "deezer",
     "contentType": "tracks",
     "frequency": "daily",
@@ -9,19 +9,37 @@
     "url": "https://www.deezer.com/es/playlist/1116188451"
   },
   {
+    "id": "deezer_top_trending_co",
+    "name": "Top Trending Colombia",
+    "source": "deezer",
+    "contentType": "tracks",
+    "frequency": "daily",
+    "playlistId": "6614398984",
+    "url": "https://www.deezer.com/es/playlist/6614398984"
+  },
+  {
+    "id": "deezer_top100_global",
+    "name": "Top 100 Global",
+    "source": "deezer",
+    "contentType": "tracks",
+    "frequency": "daily",
+    "playlistId": "3155776842",
+    "url": "https://www.deezer.com/es/playlist/3155776842"
+  },
+  {
+    "id": "deezer_top_artistas_mas_escuchados",
+    "name": "Artistas más escuchados",
+    "source": "deezer",
+    "contentType": "artists",
+    "frequency": "daily",
+    "url": "https://www.deezer.com/es/channels/module/ca9f3e84-8d71-47e6-9b2a-f77709691cf9"
+  }
+  {
     "id": "billboard_co_hot100",
     "name": "Billboard Colombia Hot 100",
     "source": "billboard",
     "contentType": "tracks",
     "frequency": "weekly",
     "url": "https://billboard.com.co/billboard-hot-100/"
-  },
-  {
-    "id": "deezer_top_artistas_global",
-    "name": "Top Artistas Global (Deezer)",
-    "source": "deezer",
-    "contentType": "artists",
-    "frequency": "daily",
-    "url": "https://www.deezer.com/es/channels/module/ca9f3e84-8d71-47e6-9b2a-f77709691cf9"
   }
 ]
