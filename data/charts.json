@@ -8,7 +8,7 @@
     "url": "https://www.deezer.com/es/playlist/1116188451"
   },
   {
-    "id": "deezer_co_top100",
+    "id": "deezer_top100_global",
     "name": "Top 100 Global",
     "source": "deezer",
     "frequency": "daily",
@@ -16,7 +16,7 @@
     "url": "https://www.deezer.com/es/playlist/3155776842"
   },
   {
-    "id": "deezer_co_top100",
+    "id": "deezer_top_trending_colombia",
     "name": "Top Trending Colombia",
     "source": "deezer",
     "frequency": "daily",
