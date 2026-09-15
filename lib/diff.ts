@@ -15,9 +15,15 @@ export interface DiffResult {
   change: string;
 }
 
+export interface EstadoChart {
+  /** Fecha (YYYY-MM-DD) de la última vez que este chart tuvo datos registrados. */
+  fecha: string | null;
+  diffs: DiffResult[];
+}
+
 /**
- * Calcula el texto de cambio de posición entre hoy y ayer.
- * - Ayer sin registro (o sin posición) y hoy con posición => "(RE)" sin emoji.
+ * Calcula el texto de cambio de posición entre una fecha y la anterior.
+ * - Sin registro anterior (o sin posición) y hoy con posición => "(RE)" sin emoji.
  * - Subió de posición (número más bajo es mejor) => "(+N)⬆️"
  * - Bajó de posición => "(-N)⬇️"
  * - Se mantuvo igual => "(=)"
@@ -33,45 +39,58 @@ export function diffPos(hoy: number, ayer: number | null | undefined): string {
 }
 
 /**
- * Construye la lista de diffs para una fecha dada, comparando contra
- * el día anterior disponible en el histórico. Solo incluye canciones
- * que SÍ tienen posición hoy (las que no aparecen en el chart se omiten).
+ * Calcula el estado actual de UN chart específico, sin asumir que se
+ * actualiza todos los días: busca la fecha más reciente en la que ese
+ * chart tenga registros, y la compara contra la fecha anterior a esa
+ * (no contra "ayer" en términos de calendario, sino contra el registro
+ * previo real de ese mismo chart). Esto permite que charts semanales
+ * (como Billboard) y diarios (como Deezer) convivan en el mismo histórico
+ * sin que uno deje vacío el panel del otro.
  */
-export function buildDiffs(
-  fechaHoy: string,
+export function buildEstadoChart(
+  chartId: string,
   historico: Historico
-): DiffResult[] {
-  const hoy = historico[fechaHoy] ?? [];
+): EstadoChart {
+  const fechasConDatos = Object.keys(historico)
+    .filter((fecha) => (historico[fecha] ?? []).some((e) => e.chartId === chartId))
+    .sort();
 
-  const fechaAnterior = Object.keys(historico)
-    .filter((f) => f < fechaHoy)
-    .sort()
-    .pop();
+  if (fechasConDatos.length === 0) {
+    return { fecha: null, diffs: [] };
+  }
 
-  const ayer = fechaAnterior ? historico[fechaAnterior] ?? [] : [];
+  const fechaActual = fechasConDatos[fechasConDatos.length - 1];
+  const fechaAnterior = fechasConDatos[fechasConDatos.length - 2] ?? null;
 
-  const resultados: DiffResult[] = [];
+  const entradasActuales = (historico[fechaActual] ?? []).filter(
+    (e) => e.chartId === chartId
+  );
+  const entradasAnteriores = fechaAnterior
+    ? (historico[fechaAnterior] ?? []).filter((e) => e.chartId === chartId)
+    : [];
 
-  for (const entry of hoy) {
+  const diffs: DiffResult[] = [];
+
+  for (const entry of entradasActuales) {
     if (entry.pos === null) continue;
 
-    const entryAyer = ayer.find(
-      (a) =>
-        a.artist === entry.artist &&
-        a.title === entry.title &&
-        a.chartId === entry.chartId
+    const entryAnterior = entradasAnteriores.find(
+      (a) => a.artist === entry.artist && a.title === entry.title
     );
 
-    const change = diffPos(entry.pos, entryAyer ? entryAyer.pos : null);
+    const change = diffPos(entry.pos, entryAnterior ? entryAnterior.pos : null);
 
-    resultados.push({
+    diffs.push({
       artist: entry.artist,
       title: entry.title,
-      chartId: entry.chartId,
+      chartId,
       pos: entry.pos,
       change,
     });
   }
 
-  return resultados.sort((a, b) => a.pos - b.pos);
+  return {
+    fecha: fechaActual,
+    diffs: diffs.sort((a, b) => a.pos - b.pos),
+  };
 }
