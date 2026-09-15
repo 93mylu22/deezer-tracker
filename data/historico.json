@@ -41,18 +41,6 @@
       "title": "BTS",
       "chartId": "deezer_top_artistas_mas_escuchados",
       "pos": 27
-    },
-    {
-      "artist": "BTS",
-      "title": "NORMAL",
-      "chartId": "billboard_co_hot100",
-      "pos": 77
-    },
-    {
-      "artist": "BTS",
-      "title": "SWIM",
-      "chartId": "billboard_co_hot100",
-      "pos": 21
     }
   ]
 }
