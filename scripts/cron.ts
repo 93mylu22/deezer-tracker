@@ -1,12 +1,15 @@
 import fs from "fs";
 import path from "path";
 import { getDeezerChart } from "../lib/deezer";
+import { getBillboardChart } from "../lib/billboard";
 import type { HistoricoEntry, Historico } from "../lib/diff";
 
 interface Chart {
   id: string;
   name: string;
-  playlistId: string;
+  source?: "deezer" | "billboard";
+  frequency?: "daily" | "weekly";
+  playlistId?: string;
   url: string;
 }
 
@@ -39,6 +42,15 @@ function getFechaBogota(): string {
   return fmt.format(new Date());
 }
 
+/** true si hoy es lunes, según hora Bogotá. */
+function esLunesBogota(): boolean {
+  const nombreDia = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Bogota",
+    weekday: "long",
+  }).format(new Date());
+  return nombreDia === "Monday";
+}
+
 /** Normaliza texto para comparar sin distinguir mayúsculas ni tildes. */
 function normaliza(str: string): string {
   return str
@@ -48,23 +60,53 @@ function normaliza(str: string): string {
     .trim();
 }
 
+/** Trae el top de un chart, según su "source" (deezer por defecto). */
+async function traerTop(
+  chart: Chart
+): Promise<{ pos: number; artist: string; title: string }[]> {
+  if (chart.source === "billboard") {
+    return getBillboardChart(chart.url);
+  }
+
+  if (!chart.playlistId) {
+    throw new Error(
+      `El chart "${chart.name}" es de Deezer pero no tiene "playlistId" en charts.json.`
+    );
+  }
+  return getDeezerChart(chart.playlistId);
+}
+
 async function main(): Promise<void> {
   const charts = readJson<Chart[]>("charts.json");
   const tracked = readJson<Tracked[]>("tracked.json");
   const historico = readJson<Historico>("historico.json");
 
   const fechaHoy = getFechaBogota();
+  const esLunes = esLunesBogota();
   const entradasHoy: HistoricoEntry[] = [];
 
   for (const chart of charts) {
-    console.log(`\n📊 Consultando "${chart.name}" (playlist ${chart.playlistId})...`);
+    const frecuencia = chart.frequency ?? "daily";
 
-    let top100: Awaited<ReturnType<typeof getDeezerChart>>;
-    try {
-      top100 = await getDeezerChart(chart.playlistId);
-    } catch (err) {
-      console.error(`  ⚠️ Error consultando ${chart.name}:`, err);
+    // Charts semanales (Billboard) solo se consultan los lunes.
+    // Ningún otro día se agrega (ni siquiera repetido) para este chart.
+    if (frecuencia === "weekly" && !esLunes) {
+      console.log(
+        `\n⏭️  "${chart.name}" es semanal y hoy no es lunes; se omite.`
+      );
       continue;
+    }
+
+    console.log(
+      `\n📊 Consultando "${chart.name}" (${chart.source ?? "deezer"}, ${frecuencia})...`
+    );
+
+    let top100: { pos: number; artist: string; title: string }[];
+    try {
+      top100 = await traerTop(chart);
+    } catch (err) {
+      console.error(`  ⚠️ No se pudo actualizar "${chart.name}":`, err);
+      continue; // no se agrega nada para este chart hoy
     }
 
     console.log(`  Se obtuvieron ${top100.length} canciones.`);

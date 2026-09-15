@@ -7,7 +7,7 @@ import { buildMensajeChart } from "@/lib/message";
 interface Chart {
   id: string;
   name: string;
-  playlistId?: string;
+  playlistId: string;
   url: string;
 }
 
@@ -105,9 +105,12 @@ export default function ChartPanel({
           rel="noopener noreferrer"
           className="shrink-0 text-xs text-[#9B7BFF] underline underline-offset-2"
         >
-          Ver en Deezer
+          Ver chart
         </a>
       </div>
+      {fechaHoy && (
+        <p className="mt-1 text-xs text-muted">Actualizado: {fechaHoy}</p>
+      )}
 
       <ul className="mt-4 divide-y divide-border">
         {items.length === 0 && (
