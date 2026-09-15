@@ -1,12 +1,12 @@
 import fs from "fs";
 import path from "path";
-import { buildDiffs, type DiffResult, type Historico } from "@/lib/diff";
+import { buildEstadoChart, type Historico } from "@/lib/diff";
 import ChartPanel from "./ChartPanel";
 
 interface Chart {
   id: string;
   name: string;
-  playlistId: string;
+  playlistId?: string;
   url: string;
 }
 
@@ -25,8 +25,7 @@ export default function Home() {
   const { charts, historico } = readData();
 
   const fechas = Object.keys(historico).sort();
-  const fechaHoy = fechas.length > 0 ? fechas[fechas.length - 1] : null;
-  const diffs: DiffResult[] = fechaHoy ? buildDiffs(fechaHoy, historico) : [];
+  const fechaGeneral = fechas.length > 0 ? fechas[fechas.length - 1] : null;
 
   return (
     <main className="min-h-screen bg-bg px-4 py-6 text-[#F3EFFF] sm:px-6 sm:py-10">
@@ -34,33 +33,36 @@ export default function Home() {
         <header className="mb-6 flex items-start justify-between gap-3 sm:mb-8">
           <div>
             <p className="text-xs font-medium tracking-wide text-muted">
-              ARMY 🇨🇴 - Music Tracker
+              deezer-tracker
             </p>
             <h1 className="mt-1 text-xl font-semibold leading-tight text-accentLight sm:text-3xl">
               Seguimiento diario de charts
             </h1>
           </div>
           <span className="mt-1 shrink-0 rounded-full border border-border bg-surface px-3 py-1 text-[11px] text-muted">
-            {fechaHoy ?? "sin datos"}
+            {fechaGeneral ?? "sin datos"}
           </span>
         </header>
 
-        {!fechaHoy && (
+        {!fechaGeneral && (
           <p className="mb-6 rounded-2xl border border-border bg-surface p-4 text-sm text-[#B4ADD1]">
             Aún no hay datos. Corre <code>npm run cron</code> localmente o
-            espera al primer cron automático (9am hora Bogotá).
+            espera al primer cron automático.
           </p>
         )}
 
         <div className="space-y-4 sm:space-y-5">
-          {charts.map((chart) => (
-            <ChartPanel
-              key={chart.id}
-              chart={chart}
-              items={diffs.filter((d) => d.chartId === chart.id)}
-              fechaHoy={fechaHoy}
-            />
-          ))}
+          {charts.map((chart) => {
+            const estado = buildEstadoChart(chart.id, historico);
+            return (
+              <ChartPanel
+                key={chart.id}
+                chart={chart}
+                items={estado.diffs}
+                fechaHoy={estado.fecha}
+              />
+            );
+          })}
         </div>
       </div>
     </main>
