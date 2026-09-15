@@ -1,25 +1,60 @@
 name: actualizar-historico
 on:
   schedule:
-    - cron: '0 14 * * *' # 9am Colombia
+    # 14:00 UTC = 9:00 am hora Bogotá (UTC-5) — corrida principal (Deezer + Billboard)
+    - cron: "0 14 * * *"
+    # 18:00 UTC = 1:00 pm hora Bogotá — Billboard suele actualizar su chart semanal
+    # más tarde en el día, así que repetimos la corrida para capturarlo si a las
+    # 9am todavía no estaba actualizado.
+    - cron: "0 18 * * *"
   workflow_dispatch:
+    inputs:
+      forzar_semanales:
+        description: "Forzar charts semanales (Billboard) aunque hoy no sea lunes"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+permissions:
+  contents: write
 
 jobs:
-  actualizar:
+  actualizar-historico:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
+
       - name: Instalar dependencias
         run: npm install --legacy-peer-deps
-      - name: Actualizar historico
+
+      - name: Instalar navegador Chromium para Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Ejecutar cron de Deezer y Billboard
+        env:
+          FORZAR_TODOS: ${{ github.event.inputs.forzar_semanales || 'false' }}
         run: npm run update-history
-      - name: Commit cambios
+
+      - name: Configurar git
         run: |
-          git config user.name "bot"
-          git config user.email "bot@bot.com"
-          git add data/
-          git commit -m "update historico $(date)" || exit 0
-          git push
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit y push si hay cambios
+        run: |
+          git add data/historico.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios en historico.json, no se hace commit."
+          else
+            git commit -m "chore: actualizar historico $(date -u +'%Y-%m-%d')"
+            git push
+          fi
