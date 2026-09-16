@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ARMY 🇨🇴 - Music Tracker",
+  title: "Deezer Tracker",
   description: "Seguimiento diario de posiciones en charts de Deezer",
 };
 

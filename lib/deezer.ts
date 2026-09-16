@@ -9,6 +9,12 @@ export interface DeezerArtistResult {
   name: string;
 }
 
+export interface DeezerAlbumResult {
+  pos: number;
+  artist: string;
+  title: string;
+}
+
 interface DeezerApiTrack {
   title?: string;
   artist?: { name?: string };
@@ -24,6 +30,15 @@ interface DeezerApiArtist {
 
 interface DeezerApiArtistsResponse {
   data?: DeezerApiArtist[];
+}
+
+interface DeezerApiAlbum {
+  title?: string;
+  artist?: { name?: string };
+}
+
+interface DeezerApiAlbumsResponse {
+  data?: DeezerApiAlbum[];
 }
 
 /**
@@ -75,5 +90,30 @@ export async function getDeezerArtistChart(
   return artistas.map((artista, index) => ({
     pos: index + 1,
     name: artista.name ?? "",
+  }));
+}
+
+/**
+ * Trae el top de álbumes más escuchados en Deezer (chart público, global).
+ */
+export async function getDeezerAlbumChart(
+  limit = 100
+): Promise<DeezerAlbumResult[]> {
+  const url = `https://api.deezer.com/chart/0/albums?limit=${limit}`;
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    throw new Error(
+      `Error consultando el chart de álbumes de Deezer: HTTP ${res.status}`
+    );
+  }
+
+  const data: DeezerApiAlbumsResponse = await res.json();
+  const albumes = data.data ?? [];
+
+  return albumes.map((album, index) => ({
+    pos: index + 1,
+    artist: album.artist?.name ?? "",
+    title: album.title ?? "",
   }));
 }
