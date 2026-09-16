@@ -3,6 +3,8 @@ export interface HistoricoEntry {
   title: string;
   chartId: string;
   pos: number | null;
+  /** Info adicional de contexto (ej. qué álbum específico cargó), no afecta el matching. */
+  detail?: string;
 }
 
 export type Historico = Record<string, HistoricoEntry[]>;
@@ -13,6 +15,7 @@ export interface DiffResult {
   chartId: string;
   pos: number;
   change: string;
+  detail?: string;
 }
 
 export interface EstadoChart {
@@ -86,6 +89,7 @@ export function buildEstadoChart(
       chartId,
       pos: entry.pos,
       change,
+      detail: entry.detail,
     });
   }
 

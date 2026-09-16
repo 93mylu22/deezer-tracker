@@ -65,6 +65,16 @@ function normaliza(str: string): string {
     .trim();
 }
 
+/**
+ * Coincidencia EXACTA de nombre de artista (tras normalizar). A diferencia
+ * de un match por "includes", esto evita falsos positivos con nombres muy
+ * cortos como "RM" o "V", que de otro modo combinarían con cualquier texto
+ * que simplemente contenga esas letras (ej. "Daylight Storms" contiene "rm").
+ */
+function coincideArtista(nombreEnChart: string, nombreBuscado: string): boolean {
+  return normaliza(nombreEnChart) === normaliza(nombreBuscado);
+}
+
 /** Trae el top de CANCIONES de un chart, según su "source". */
 async function traerTopCanciones(
   chart: Chart
@@ -148,9 +158,7 @@ async function main(): Promise<void> {
       console.log(`  Se obtuvieron ${topArtistas.length} artistas.`);
 
       for (const artista of artistasRastreados) {
-        const match = topArtistas.find((a) =>
-          normaliza(a.name).includes(normaliza(artista))
-        );
+        const match = topArtistas.find((a) => coincideArtista(a.name, artista));
 
         entradasHoy.push({
           artist: "",
@@ -162,7 +170,15 @@ async function main(): Promise<void> {
         if (match) {
           console.log(`  ✓ ${artista}: #${match.pos}`);
         } else {
-          console.log(`  ✗ ${artista}: no está en el top`);
+          console.log(`  ✗ ${artista}: no está en el top (match exacto)`);
+          const pistaParcial = topArtistas.find((a) =>
+            normaliza(a.name).includes(normaliza(artista))
+          );
+          if (pistaParcial) {
+            console.log(
+              `     ℹ️ Pista: hay un nombre parecido en el chart: "${pistaParcial.name}" (#${pistaParcial.pos}). Si es el mismo artista con nombre distinto, avisa para ajustar tracked-artists.json.`
+            );
+          }
         }
       }
 
@@ -185,21 +201,30 @@ async function main(): Promise<void> {
         // Puede haber más de un álbum del mismo artista en el chart;
         // nos quedamos con el de mejor posición (número más bajo).
         const coincidencias = topAlbumes.filter((a) =>
-          normaliza(a.artist).includes(normaliza(artista))
+          coincideArtista(a.artist, artista)
         );
         const mejor = coincidencias.sort((a, b) => a.pos - b.pos)[0];
 
         entradasHoy.push({
-          artist: mejor ? mejor.title : "",
+          artist: "",
           title: artista,
           chartId: chart.id,
           pos: mejor ? mejor.pos : null,
+          detail: mejor ? mejor.title : undefined,
         });
 
         if (mejor) {
           console.log(`  ✓ ${artista}: #${mejor.pos} (álbum: ${mejor.title})`);
         } else {
-          console.log(`  ✗ ${artista}: ningún álbum en el top`);
+          console.log(`  ✗ ${artista}: ningún álbum en el top (match exacto)`);
+          const pistaParcial = topAlbumes.find((a) =>
+            normaliza(a.artist).includes(normaliza(artista))
+          );
+          if (pistaParcial) {
+            console.log(
+              `     ℹ️ Pista: hay un artista parecido en el chart: "${pistaParcial.artist}" (álbum: ${pistaParcial.title}). Si es el mismo artista con nombre distinto, avisa para ajustar tracked-artists.json.`
+            );
+          }
         }
       }
 
