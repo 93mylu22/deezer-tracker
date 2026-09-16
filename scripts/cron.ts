@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
+import { getDeezerChart } from "../lib/deezer";
 import {
-  getDeezerChart,
-  getDeezerArtistChart,
-  getDeezerAlbumChart,
-} from "../lib/deezer";
+  getDeezerModuleAlbums,
+  getDeezerModuleArtists,
+} from "../lib/deezer-module";
 import { getBillboardChart } from "../lib/billboard";
 import type { HistoricoEntry, Historico } from "../lib/diff";
 
@@ -91,12 +91,12 @@ async function traerTopCanciones(
   return getDeezerChart(chart.playlistId);
 }
 
-/** Trae el top de ARTISTAS de un chart, según su "source". */
+/** Trae el top de ARTISTAS de un chart, scrapeando el módulo real de Deezer. */
 async function traerTopArtistas(
   chart: Chart
 ): Promise<{ pos: number; name: string }[]> {
   if (chart.source === "deezer") {
-    return getDeezerArtistChart(100);
+    return getDeezerModuleArtists(chart.url);
   }
 
   throw new Error(
@@ -104,12 +104,12 @@ async function traerTopArtistas(
   );
 }
 
-/** Trae el top de ÁLBUMES de un chart, según su "source". */
+/** Trae el top de ÁLBUMES de un chart, scrapeando el módulo real de Deezer. */
 async function traerTopAlbumes(
   chart: Chart
 ): Promise<{ pos: number; artist: string; title: string }[]> {
   if (chart.source === "deezer") {
-    return getDeezerAlbumChart(100);
+    return getDeezerModuleAlbums(chart.url);
   }
 
   throw new Error(
