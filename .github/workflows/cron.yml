@@ -1,11 +1,11 @@
 name: actualizar-historico
 on:
   schedule:
-    # 14:00 UTC = 9:00 am hora Bogotá (UTC-5) — corrida principal (Deezer + Billboard)
-    - cron: "0 14 * * *"
+    # 12:30 UTC = 7:30 am hora Bogotá (UTC-5) — corrida principal (Deezer + Billboard)
+    - cron: "30 12 * * *"
     # 18:00 UTC = 1:00 pm hora Bogotá — Billboard suele actualizar su chart semanal
     # más tarde en el día, así que repetimos la corrida para capturarlo si a las
-    # 9am todavía no estaba actualizado.
+    # 7:30am todavía no estaba actualizado.
     - cron: "0 18 * * *"
   workflow_dispatch:
     inputs:
