@@ -3,6 +3,18 @@
     {
       "artist": "BTS",
       "title": "NORMAL",
+      "chartId": "billboard_co_hot100",
+      "pos": 77
+    },
+    {
+      "artist": "BTS",
+      "title": "SWIM",
+      "chartId": "billboard_co_hot100",
+      "pos": 21
+    },
+    {
+      "artist": "BTS",
+      "title": "NORMAL",
       "chartId": "deezer_top100_co",
       "pos": 69
     },
