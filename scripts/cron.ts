@@ -1,10 +1,6 @@
 import fs from "fs";
 import path from "path";
 import { getDeezerChart } from "../lib/deezer";
-import {
-  getDeezerModuleAlbums,
-  getDeezerModuleArtists,
-} from "../lib/deezer-module";
 import { getBillboardChart } from "../lib/billboard";
 import type { HistoricoEntry, Historico } from "../lib/diff";
 
@@ -13,7 +9,7 @@ interface Chart {
   name: string;
   source?: "deezer" | "billboard";
   contentType?: "tracks" | "artists" | "albums";
-  frequency?: "daily" | "weekly";
+  frequency?: "daily" | "weekly" | "manual";
   playlistId?: string;
   url: string;
 }
@@ -65,16 +61,6 @@ function normaliza(str: string): string {
     .trim();
 }
 
-/**
- * Coincidencia EXACTA de nombre de artista (tras normalizar). A diferencia
- * de un match por "includes", esto evita falsos positivos con nombres muy
- * cortos como "RM" o "V", que de otro modo combinarían con cualquier texto
- * que simplemente contenga esas letras (ej. "Daylight Storms" contiene "rm").
- */
-function coincideArtista(nombreEnChart: string, nombreBuscado: string): boolean {
-  return normaliza(nombreEnChart) === normaliza(nombreBuscado);
-}
-
 /** Trae el top de CANCIONES de un chart, según su "source". */
 async function traerTopCanciones(
   chart: Chart
@@ -91,45 +77,34 @@ async function traerTopCanciones(
   return getDeezerChart(chart.playlistId);
 }
 
-/** Trae el top de ARTISTAS de un chart, scrapeando el módulo real de Deezer. */
-async function traerTopArtistas(
-  chart: Chart
-): Promise<{ pos: number; name: string }[]> {
-  if (chart.source === "deezer") {
-    return getDeezerModuleArtists(chart.url);
-  }
-
-  throw new Error(
-    `Chart de artistas con source "${chart.source}" todavía no está soportado.`
-  );
-}
-
-/** Trae el top de ÁLBUMES de un chart, scrapeando el módulo real de Deezer. */
-async function traerTopAlbumes(
-  chart: Chart
-): Promise<{ pos: number; artist: string; title: string }[]> {
-  if (chart.source === "deezer") {
-    return getDeezerModuleAlbums(chart.url);
-  }
-
-  throw new Error(
-    `Chart de álbumes con source "${chart.source}" todavía no está soportado.`
-  );
-}
-
 async function main(): Promise<void> {
   const charts = readJson<Chart[]>("charts.json");
   const tracked = readJson<Tracked[]>("tracked.json");
-  const artistasRastreados = readJson<string[]>("tracked-artists.json");
   const historico = readJson<Historico>("historico.json");
 
   const fechaHoy = getFechaBogota();
   const esLunes = esLunesBogota();
-  const entradasHoy: HistoricoEntry[] = [];
+
+  // Conservamos entradas de charts que este script NO maneja (ej. los de
+  // tipo "artists"/"albums", que ahora se actualizan con npm run parse-html
+  // a partir de HTML subido manualmente), para no borrarlas si ya existían
+  // para hoy.
+  const chartsManejadosAqui = new Set(
+    charts
+      .filter((c) => (c.contentType ?? "tracks") === "tracks")
+      .map((c) => c.id)
+  );
+  const entradasHoy: HistoricoEntry[] = (historico[fechaHoy] ?? []).filter(
+    (e) => !chartsManejadosAqui.has(e.chartId)
+  );
 
   for (const chart of charts) {
-    const frecuencia = chart.frequency ?? "daily";
     const contentType = chart.contentType ?? "tracks";
+    if (contentType !== "tracks") {
+      continue; // manejado por scripts/parse-raw-html.ts
+    }
+
+    const frecuencia = chart.frequency ?? "daily";
     const forzarTodos = process.env.FORZAR_TODOS === "true";
 
     // Charts semanales (Billboard) solo se consultan los lunes,
@@ -142,96 +117,9 @@ async function main(): Promise<void> {
     }
 
     console.log(
-      `\n📊 Consultando "${chart.name}" (${chart.source ?? "deezer"}, ${contentType}, ${frecuencia})...`
+      `\n📊 Consultando "${chart.name}" (${chart.source ?? "deezer"}, ${frecuencia})...`
     );
 
-    // --- Charts de tipo "artists": posición del ARTISTA en el chart ---
-    if (contentType === "artists") {
-      let topArtistas: { pos: number; name: string }[];
-      try {
-        topArtistas = await traerTopArtistas(chart);
-      } catch (err) {
-        console.error(`  ⚠️ No se pudo actualizar "${chart.name}":`, err);
-        continue;
-      }
-
-      console.log(`  Se obtuvieron ${topArtistas.length} artistas.`);
-
-      for (const artista of artistasRastreados) {
-        const match = topArtistas.find((a) => coincideArtista(a.name, artista));
-
-        entradasHoy.push({
-          artist: "",
-          title: artista,
-          chartId: chart.id,
-          pos: match ? match.pos : null,
-        });
-
-        if (match) {
-          console.log(`  ✓ ${artista}: #${match.pos}`);
-        } else {
-          console.log(`  ✗ ${artista}: no está en el top (match exacto)`);
-          const pistaParcial = topArtistas.find((a) =>
-            normaliza(a.name).includes(normaliza(artista))
-          );
-          if (pistaParcial) {
-            console.log(
-              `     ℹ️ Pista: hay un nombre parecido en el chart: "${pistaParcial.name}" (#${pistaParcial.pos}). Si es el mismo artista con nombre distinto, avisa para ajustar tracked-artists.json.`
-            );
-          }
-        }
-      }
-
-      continue;
-    }
-
-    // --- Charts de tipo "albums": posición de CUALQUIER álbum del artista ---
-    if (contentType === "albums") {
-      let topAlbumes: { pos: number; artist: string; title: string }[];
-      try {
-        topAlbumes = await traerTopAlbumes(chart);
-      } catch (err) {
-        console.error(`  ⚠️ No se pudo actualizar "${chart.name}":`, err);
-        continue;
-      }
-
-      console.log(`  Se obtuvieron ${topAlbumes.length} álbumes.`);
-
-      for (const artista of artistasRastreados) {
-        // Puede haber más de un álbum del mismo artista en el chart;
-        // nos quedamos con el de mejor posición (número más bajo).
-        const coincidencias = topAlbumes.filter((a) =>
-          coincideArtista(a.artist, artista)
-        );
-        const mejor = coincidencias.sort((a, b) => a.pos - b.pos)[0];
-
-        entradasHoy.push({
-          artist: "",
-          title: artista,
-          chartId: chart.id,
-          pos: mejor ? mejor.pos : null,
-          detail: mejor ? mejor.title : undefined,
-        });
-
-        if (mejor) {
-          console.log(`  ✓ ${artista}: #${mejor.pos} (álbum: ${mejor.title})`);
-        } else {
-          console.log(`  ✗ ${artista}: ningún álbum en el top (match exacto)`);
-          const pistaParcial = topAlbumes.find((a) =>
-            normaliza(a.artist).includes(normaliza(artista))
-          );
-          if (pistaParcial) {
-            console.log(
-              `     ℹ️ Pista: hay un artista parecido en el chart: "${pistaParcial.artist}" (álbum: ${pistaParcial.title}). Si es el mismo artista con nombre distinto, avisa para ajustar tracked-artists.json.`
-            );
-          }
-        }
-      }
-
-      continue;
-    }
-
-    // --- Charts de tipo "tracks" (comportamiento original) ---
     let top100: { pos: number; artist: string; title: string }[];
     try {
       top100 = await traerTopCanciones(chart);
