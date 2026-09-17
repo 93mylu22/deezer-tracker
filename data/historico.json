@@ -36,5 +36,31 @@
       "chartId": "deezer_top_trending",
       "pos": null
     }
+  ],
+  "2026-09-17": [
+    {
+      "artist": "BTS",
+      "title": "NORMAL",
+      "chartId": "deezer_top100_co",
+      "pos": 33
+    },
+    {
+      "artist": "BTS",
+      "title": "SWIM",
+      "chartId": "deezer_top100_co",
+      "pos": 35
+    },
+    {
+      "artist": "BTS",
+      "title": "NORMAL",
+      "chartId": "deezer_top_trending",
+      "pos": null
+    },
+    {
+      "artist": "BTS",
+      "title": "SWIM",
+      "chartId": "deezer_top_trending",
+      "pos": null
+    }
   ]
 }
