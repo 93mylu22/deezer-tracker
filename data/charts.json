@@ -27,7 +27,7 @@
   },
   {
     "id": "deezer_top_global",
-    "name": "Top 100 Global"
+    "name": "Top 100 Global",
     "source": "deezer",
     "contentType": "tracks",
     "frequency": "daily",
