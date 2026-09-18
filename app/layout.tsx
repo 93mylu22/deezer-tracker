@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Music Tracker",
+  title: "ARMY 🇨🇴 - Music Tracker",
   description: "Seguimiento diario de posiciones en charts de Colombia",
 };
 
