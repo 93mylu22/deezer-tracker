@@ -1,7 +1,7 @@
 [
   {
     "id": "deezer_co_top100",
-    "name": "Deezer Colombia Top 100",
+    "name": "Top 100 Colombia",
     "source": "deezer",
     "contentType": "tracks",
     "frequency": "daily",
@@ -10,7 +10,7 @@
   },
   {
     "id": "billboard_co_hot100",
-    "name": "Billboard Colombia Hot 100",
+    "name": "Hot 100 Colombia",
     "source": "billboard",
     "contentType": "tracks",
     "frequency": "weekly",
@@ -18,7 +18,7 @@
   },
   {
     "id": "deezer_top_artistas_global",
-    "name": "Top Artistas Global (Deezer)",
+    "name": "Top Artistas más escuchados",
     "source": "deezer",
     "contentType": "artists",
     "frequency": "daily",
@@ -26,7 +26,7 @@
   },
   {
     "id": "deezer_top_albumes_global",
-    "name": "Top Álbumes Global (Deezer)",
+    "name": "Top Álbumes más escuchados",
     "source": "deezer",
     "contentType": "albums",
     "frequency": "daily",
