@@ -1,4 +1,12 @@
 [
+   {
+    "id": "billboard_co_hot100",
+    "name": "Hot 100 Colombia",
+    "source": "billboard",
+    "contentType": "tracks",
+    "frequency": "weekly",
+    "url": "https://billboard.com.co/billboard-hot-100/"
+  },
   {
     "id": "deezer_co_top100",
     "name": "Top 100 Colombia",
@@ -7,14 +15,6 @@
     "frequency": "daily",
     "playlistId": "1116188451",
     "url": "https://www.deezer.com/es/playlist/1116188451"
-  },
-  {
-    "id": "billboard_co_hot100",
-    "name": "Hot 100 Colombia",
-    "source": "billboard",
-    "contentType": "tracks",
-    "frequency": "weekly",
-    "url": "https://billboard.com.co/billboard-hot-100/"
   },
   {
     "id": "deezer_top_artistas_global",
