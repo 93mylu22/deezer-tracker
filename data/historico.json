@@ -132,5 +132,19 @@
       "chartId": "deezer_top_albumes_global",
       "pos": null
     }
+  ],
+  "2026-09-18": [
+    {
+      "artist": "BTS",
+      "title": "NORMAL",
+      "chartId": "deezer_co_top100",
+      "pos": 38
+    },
+    {
+      "artist": "BTS",
+      "title": "SWIM",
+      "chartId": "deezer_co_top100",
+      "pos": 33
+    }
   ]
 }
