@@ -36,8 +36,8 @@ export function diffPos(hoy: number, ayer: number | null | undefined): string {
     return "(RE)";
   }
   const delta = ayer - hoy;
-  if (delta > 0) return `(+${delta})⬆️`;
-  if (delta < 0) return `(${delta})⬇️`;
+  if (delta > 0) return `(+${delta}) ⬆️`;
+  if (delta < 0) return `(-${delta}) ⬇️`;
   return "(=)";
 }
 
