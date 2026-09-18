@@ -1,0 +1,45 @@
+name: Parsear HTML de artistas/álbumes
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "data/raw/artistas.html"
+      - "data/raw/albumes.html"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  parsear:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependencias
+        run: npm install --legacy-peer-deps
+
+      - name: Parsear HTML y actualizar histórico
+        run: npm run parse-html
+
+      - name: Configurar git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit y push si hay cambios
+        run: |
+          git add data/historico.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios en historico.json, no se hace commit."
+          else
+            git commit -m "chore: actualizar historico desde HTML subido $(date -u +'%Y-%m-%d')"
+            git push
+          fi
