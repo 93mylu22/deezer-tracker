@@ -33,7 +33,7 @@ export default function Home() {
         <header className="mb-6 flex items-start justify-between gap-3 sm:mb-8">
           <div>
             <p className="text-xs font-medium tracking-wide text-muted">
-              music-tracker
+              ARMY 🇨🇴 music-tracker
             </p>
             <h1 className="mt-1 text-xl font-semibold leading-tight text-accentLight sm:text-3xl">
               Seguimiento diario de charts de Colombia
