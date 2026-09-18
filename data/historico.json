@@ -23,6 +23,114 @@
       "title": "SWIM",
       "chartId": "billboard_co_hot100",
       "pos": 21
+    },
+    {
+      "artist": "",
+      "title": "BTS",
+      "chartId": "deezer_top_artistas_global",
+      "pos": 38
+    },
+    {
+      "artist": "",
+      "title": "RM",
+      "chartId": "deezer_top_artistas_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "JIN",
+      "chartId": "deezer_top_artistas_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "SUGA",
+      "chartId": "deezer_top_artistas_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "Agust D",
+      "chartId": "deezer_top_artistas_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "j-hope",
+      "chartId": "deezer_top_artistas_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "Jimin",
+      "chartId": "deezer_top_artistas_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "V",
+      "chartId": "deezer_top_artistas_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "Jungkook",
+      "chartId": "deezer_top_artistas_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "BTS",
+      "chartId": "deezer_top_albumes_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "RM",
+      "chartId": "deezer_top_albumes_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "JIN",
+      "chartId": "deezer_top_albumes_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "SUGA",
+      "chartId": "deezer_top_albumes_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "Agust D",
+      "chartId": "deezer_top_albumes_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "j-hope",
+      "chartId": "deezer_top_albumes_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "Jimin",
+      "chartId": "deezer_top_albumes_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "V",
+      "chartId": "deezer_top_albumes_global",
+      "pos": null
+    },
+    {
+      "artist": "",
+      "title": "Jungkook",
+      "chartId": "deezer_top_albumes_global",
+      "pos": null
     }
   ]
 }
