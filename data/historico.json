@@ -257,30 +257,6 @@
   ],
   "2026-09-19": [
     {
-      "artist": "BTS",
-      "title": "NORMAL",
-      "chartId": "deezer_co_top100",
-      "pos": 92
-    },
-    {
-      "artist": "BTS",
-      "title": "SWIM",
-      "chartId": "deezer_co_top100",
-      "pos": 69
-    },
-    {
-      "artist": "BTS",
-      "title": "NORMAL",
-      "chartId": "deezer_trending_co",
-      "pos": null
-    },
-    {
-      "artist": "BTS",
-      "title": "SWIM",
-      "chartId": "deezer_trending_co",
-      "pos": null
-    },
-    {
       "artist": "",
       "title": "BTS",
       "chartId": "deezer_top_artistas_global",
@@ -386,6 +362,30 @@
       "artist": "",
       "title": "Jungkook",
       "chartId": "deezer_top_albumes_global",
+      "pos": null
+    },
+    {
+      "artist": "BTS",
+      "title": "NORMAL",
+      "chartId": "deezer_co_top100",
+      "pos": 92
+    },
+    {
+      "artist": "BTS",
+      "title": "SWIM",
+      "chartId": "deezer_co_top100",
+      "pos": 69
+    },
+    {
+      "artist": "BTS",
+      "title": "NORMAL",
+      "chartId": "deezer_trending_co",
+      "pos": null
+    },
+    {
+      "artist": "BTS",
+      "title": "SWIM",
+      "chartId": "deezer_trending_co",
       "pos": null
     }
   ]
