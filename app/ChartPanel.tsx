@@ -7,8 +7,16 @@ import { buildMensajeChart } from "@/lib/message";
 interface Chart {
   id: string;
   name: string;
+  source?: string;
   playlistId?: string;
   url: string;
+}
+
+/** Nombre bonito para mostrar según el campo "source" de charts.json. */
+function nombreFuente(source?: string): string {
+  if (source === "deezer") return "Deezer";
+  if (source === "billboard") return "Billboard";
+  return source ?? "Desconocida";
 }
 
 type EstadoCopiado = "idle" | "copiado" | "error";
@@ -111,6 +119,9 @@ export default function ChartPanel({
       {fechaHoy && (
         <p className="mt-1 text-xs text-muted">Actualizado: {fechaHoy}</p>
       )}
+      <p className="mt-0.5 text-xs text-muted">
+        Fuente: {nombreFuente(chart.source)}
+      </p>
 
       <ul className="mt-4 divide-y divide-border">
         {items.length === 0 && (
