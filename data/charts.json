@@ -25,6 +25,15 @@
     "playlistId": "6614398984",
     "url": "https://www.deezer.com/es/playlist/6614398984"
   },
+   {
+    "id": "deezer_top_global",
+    "name": "Top 100 Global",
+    "source": "deezer",
+    "contentType": "tracks",
+    "frequency": "daily",
+    "playlistId": "3155776842",
+    "url": "https://www.deezer.com/es/playlist/3155776842"
+  },
   {
     "id": "deezer_top_artistas_global",
     "name": "Top Artistas más escuchados",
