@@ -3526,5 +3526,43 @@
       "chartId": "deezer_top_global",
       "pos": null
     }
+  ],
+  "2026-11-10": [
+    {
+      "artist": "BTS",
+      "title": "NORMAL",
+      "chartId": "deezer_co_top100",
+      "pos": 87
+    },
+    {
+      "artist": "BTS",
+      "title": "SWIM",
+      "chartId": "deezer_co_top100",
+      "pos": 60
+    },
+    {
+      "artist": "BTS",
+      "title": "NORMAL",
+      "chartId": "deezer_trending_co",
+      "pos": null
+    },
+    {
+      "artist": "BTS",
+      "title": "SWIM",
+      "chartId": "deezer_trending_co",
+      "pos": null
+    },
+    {
+      "artist": "BTS",
+      "title": "NORMAL",
+      "chartId": "deezer_top_global",
+      "pos": null
+    },
+    {
+      "artist": "BTS",
+      "title": "SWIM",
+      "chartId": "deezer_top_global",
+      "pos": null
+    }
   ]
 }
